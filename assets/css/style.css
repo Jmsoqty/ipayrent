@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+   
+}
+
+body{
+    background-image:url('../images/backgroung.jpg');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.bg{
+    background-color: white;
+    max-width: 400px;
+    margin: auto;
+}
+
+.log{
+    color: #354a6b;
+}
+
+.btn-color{
+    background-color: #354a6b;
+    
+    color: white;
+}

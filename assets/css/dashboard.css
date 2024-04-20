@@ -1,0 +1,28 @@
+
+
+#side_nav{
+    background-color: #20304A;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+.content{
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebar li.active{
+    background: #eee;
+    border-radius: 8px;
+}
+
+.sidebar li.active a, .sidebar li.active a:hover {
+    color: black;
+
+}
+
+.sidebar li a{
+    color: #eee;
+}
+
+

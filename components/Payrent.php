@@ -70,14 +70,14 @@ include '../api/authentication.php';
                             <option value="">Select Room Number</option>
                             <?php
                             // SQL query to fetch room numbers from tbl_apartments
-                            $sql = "SELECT room_number FROM tbl_apartments";
+                            $sql = "SELECT room_number FROM tbl_apartments WHERE vacancy = 'Vacant'";
                             $result = mysqli_query($conn, $sql);
                             if ($result && mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     echo "<option value='" . $row["room_number"] . "'>" . $row["room_number"] . "</option>";
                                 }
                             } else {
-                                echo "<option value=''>No rooms found</option>";
+                                echo "<option value=''>No rooms available</option>";
                             }
                             ?>
                         </select>
@@ -102,11 +102,11 @@ include '../api/authentication.php';
                             <input type="date" class="form-control" id="inputTransactionDate" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputTransactionDate" class="form-label">Started Date</label>
+                            <label for="inputTransactionDate" class="form-label">Startinf Date</label>
                             <input type="date" class="form-control" id="inputStartedDate" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputTransactionDate" class="form-label">Ended Date</label>
+                            <label for="inputTransactionDate" class="form-label">End Date</label>
                             <input type="date" class="form-control" id="inputEndedDate" required>
                         </div>
                         <!-- Add more fields as needed -->

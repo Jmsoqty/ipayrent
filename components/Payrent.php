@@ -102,7 +102,7 @@ include '../api/authentication.php';
                             <input type="date" class="form-control" id="inputTransactionDate" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputTransactionDate" class="form-label">Startinf Date</label>
+                            <label for="inputTransactionDate" class="form-label">Starting Date</label>
                             <input type="date" class="form-control" id="inputStartedDate" required>
                         </div>
                         <div class="col-md-6">

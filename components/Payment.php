@@ -234,9 +234,21 @@ include '../api/authentication.php';
         $('button[name="print"]').click(function() {
             var month = $('#month').val();
             var year = $('#year').val();
-            
-            window.open('../api/report.php?month=' + month + '&year=' + year, '_blank');
+            var tenant = $('#inputTenant').val();
+
+            if (tenant || $('#selectAll').prop('checked')) {
+                if (tenant) {
+                    window.open('../api/report.php?month=' + month + '&year=' + year + '&tenant=' + tenant, '_blank');
+                } else {
+                    window.open('../api/report.php?month=' + month + '&year=' + year, '_blank');
+                }
+            } else {
+                alert('Please select a tenant email or check "Select All Tenants".');
+            }
         });
     });
 </script>
+
+
+
 </html>

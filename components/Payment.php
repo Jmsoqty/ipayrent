@@ -23,7 +23,7 @@ include '../api/authentication.php';
                 <li class=""><a href="success.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/home.png" alt="Home" class="me-2" width="20" height="20">Home</a></li>
                 <li class=""><a href="tenant.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/user.png" alt="Home" class="me-2" width="20" height="20">Tenants</a></li>
                 <li class=""><a href="apartment.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/apartment.png" alt="Home" class="me-2" width="20" height="20">Apartments</a></li>
-                <li class=""><a href="payrent.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/payrent.png" alt="Home" class="me-2" width="20" height="20">Pay Rent</a></li>
+                <!-- <li class=""><a href="payrent.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/payrent.png" alt="Home" class="me-2" width="20" height="20">Pay Rent</a></li> -->
                 <li class="active"><a href="payment.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/payment.png" alt="Home" class="me-2" width="20" height="20">Transactions</a></li>
                 <li class=""><a href="create_user.php" class="text-decoration-none px-3 py-2 d-block mb-2"><img src="../assets/images/user.png" alt="Home" class="me-2" width="20" height="20">Create Account</a></li>
                 <li class="mt-auto"><a href="../api/logout.php" class="text-decoration-none px-3 py-2 d-block"><img src="../assets/images/logout.png" alt="Home" class="me-2" width="20" height="20">Logout</a></li>
@@ -38,25 +38,21 @@ include '../api/authentication.php';
                 </a>
             </div>
         </nav>
-        <div class="container-fluid px-4 mt-3">
-        
-        <div class="p-3">
-
-            <div class="text-end ">
-               
-                    
-            </div>
-
-            <div class="container-fluid px-4 mt-3">
-                    <div class="text-end">
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#print">Print Transaction</button>
+                <div class="container-fluid px-4 mt-3">
+                <div class="text-end">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#print">Print Transaction</button>
+                </div>
+                <div class="d-flex justify-content-around mt-3">
+                    <img src="../assets/images/find.png" class="img-fluid me-2" id="searchbar" width="35px">
+                    <input class="form-control mr-sm-2" type="text" id="search" placeholder="Search Transaction.." aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchBtn">Search</button>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header bg-primary-subtle">
+                        <p class="fs-6 fw-bold mt-3 text-center">Transaction History</p>
                     </div>
-                    <div class="card mt-3">
-                        <div class="card-header bg-primary-subtle">
-                            <p class="fs-6 fw-bold mt-3 text-center">Transaction History</p>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table">
+                    <div class="table-responsive">
+                        <table id="transactionTable" class="table">
                                 <thead>
                                     <tr>
                                         <th scope="col" class="text-center">#</th>
@@ -69,94 +65,170 @@ include '../api/authentication.php';
                                         <th scope="col" class="text-center">Date Paid</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                <?php
-                                    $sql = "SELECT * FROM tbl_transactions";
-
-                                    $result = $conn->query($sql);
-
-                                    if (!$result) {
-                                        die("Invalid query: " . $conn->error);
-                                    }
-
-                                    $i = 0;
-                                    while ($row = $result->fetch_assoc()) {
-                                        $i++;
-                                        $startedDate = date('m/d/y', strtotime($row['started_date']));
-                                        $endedDate = date('m/d/y', strtotime($row['ended_date']));
-                                        $datePaid = date('m/d/y', strtotime($row['date_paid']));
-                                        
-                                        echo "
-                                        <tr>
-                                            <td class='text-center'>{$i}</td>
-                                            <td class='text-center'>{$row['transaction_id']}</td>
-                                            <td class='text-center'>{$row['tenant_name']}</td>
-                                            <td class='text-center'>{$row['room_number']}</td>
-                                            <td class='text-center'>{$row['room_rate']} PHP</td>
-                                            <td class='text-center'>{$row['payment']} PHP</td>
-                                            <td class='text-center'>{$startedDate} - {$endedDate}</td>
-                                            <td class='text-center'>{$datePaid}</td>
-                                        </tr>
-                                        ";
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
                     </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal fade" id="print" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createModalLabel">Print Reports</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="month">Month</label>
-                        <select class="form-select" id="month">
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                    </div>
-                    <div class="input-group mb-3">
-                        <label class="input-group-text" for="year">Year</label>
-                        <select class="form-select" id="year">
-                            <?php
-                            // Generate options for years, adjust as needed
-                            $currentYear = date('Y');
-                            for ($i = $currentYear - 10; $i <= $currentYear; $i++) {
-                                echo "<option value=\"$i\">$i</option>";
+                <!-- Pagination links -->
+                <div class="d-flex justify-content-center mt-3">
+                    <ul id="pagination" class="pagination">
+                        <!-- Pagination links will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal fade" id="print" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Print Reports</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-20">
+                    <label for="inputTenant" class="form-label">Tenant Email</label>
+                    <select class="form-select" id="inputTenant" required>
+                        <option value="">Select Tenant Email</option>
+                        <?php
+                        // SQL query to fetch email addresses from tbl_tenants
+                        $sql = "SELECT email FROM tbl_tenants";
+                        $result = mysqli_query($conn, $sql);
+                        if ($result && mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row["email"] . "'>" . $row["email"] . "</option>";
                             }
-                            ?>
-                        </select>
-                    </div>
+                        } else {
+                            echo "<option value=''>No tenants found</option>";
+                        }
+                        ?>
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-info" name="print">Print</button>
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="selectAll">
+                    <label class="form-check-label" for="selectAll">
+                        Select All Tenants
+                    </label>
                 </div>
+                <div class="input-group mt-3">
+                    <label class="input-group-text" for="month">Month</label>
+                    <select class="form-select" id="month">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="input-group mt-3">
+                    <label class="input-group-text" for="year">Year</label>
+                    <select class="form-select" id="year">
+                        <?php
+                        // Generate options for years, adjust as needed
+                        $currentYear = date('Y');
+                        for ($i = $currentYear - 10; $i <= $currentYear; $i++) {
+                            echo "<option value=\"$i\">$i</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" name="print">Print</button>
             </div>
         </div>
     </div>
+</div>
+
 
 
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+    // Select Tenant Email dropdown
+    var selectTenant = $('#inputTenant');
+    // Select All checkbox
+    var selectAllCheckbox = $('#selectAll');
+
+    // Event listener for Select All checkbox
+    selectAllCheckbox.change(function() {
+        // If Select All is checked, disable Tenant Email dropdown and reset its value
+        if ($(this).is(':checked')) {
+            selectTenant.prop('disabled', true).val('');
+        } else {
+            // If Select All is unchecked, enable Tenant Email dropdown
+            selectTenant.prop('disabled', false);
+        }
+    });
+
+    // Event listener for Tenant Email dropdown
+    selectTenant.change(function() {
+        // If Tenant Email dropdown is changed, uncheck Select All checkbox
+        selectAllCheckbox.prop('checked', false);
+    });
+});
+
+</script>
+
+<script>
+    $(document).ready(function() {
+    var currentPage = 1;
+    var totalPages = 1;
+    var searchValue = '';
+
+    // Function to fetch and display data based on page and search value
+    function fetchData() {
+        $.ajax({
+            url: '../api/fetch_transactions.php', // URL to your PHP script for fetching transactions
+            method: 'GET',
+            data: { page: currentPage, search: searchValue },
+            dataType: 'json', // Specify JSON data type for automatic parsing
+            success: function(response) {
+                $('#tableBody').html(response.tableData);
+                $('#pagination').html(response.pagination);
+                console.log("Table data inserted into #tableBody:", $('#tableBody').html());
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    // Initial data fetch
+    fetchData();
+
+    // Search button click event
+    $('#searchBtn').click(function() {
+        searchValue = $('#search').val();
+        currentPage = 1; // Reset to first page when searching
+        fetchData();
+    });
+
+    // Pagination link click event (using event delegation)
+    $('#pagination').on('click', 'li.page-item', function() {
+        var page = $(this).data('page');
+        if (page === 'prev' && currentPage > 1) {
+            currentPage--;
+        } else if (page === 'next' && currentPage < totalPages) {
+            currentPage++;
+        } else if (typeof page === 'number') {
+            currentPage = page;
+        }
+        fetchData();
+    });
+});
+
+</script>
 <script>
     $(document).ready(function() {
         $('button[name="print"]').click(function() {

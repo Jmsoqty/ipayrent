@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   const daysContainer = $(".days");
   const nextBtn = $(".next-btn");
   const prevBtn = $(".prev-btn");
@@ -22,6 +22,7 @@ $(document).ready(function() {
 
   let currentMonth = new Date().getMonth();
   let currentYear = new Date().getFullYear();
+  let fullyBookedDates = [];
 
   renderCalendar();
 
@@ -39,7 +40,11 @@ $(document).ready(function() {
     }
 
     for (let i = 1; i <= lastDay; i++) {
-      daysHTML += `<div class="day">${i}</div>`;
+      const currentDate = new Date(currentYear, currentMonth, i);
+      const isBooked = fullyBookedDates.includes(
+        currentDate.toISOString().slice(0, 10)
+      );
+      daysHTML += `<div class="day${isBooked ? " today" : ""}">${i}</div>`;
     }
 
     daysContainer.html(daysHTML);
@@ -85,19 +90,12 @@ $(document).ready(function() {
     url: "../api/fetch_booked_dates.php",
     method: "GET",
     dataType: "json",
-    success: function(data) {
-      const { fully_booked_dates } = data;
-
-      fully_booked_dates.forEach((date) => {
-        const dayElement = $(".day").filter(function() {
-          return $(this).text() == date.split('-')[2]; // Split date to get day
-        });
-        dayElement.addClass("today");
-      });
-
-      console.log("Fully booked dates:", fully_booked_dates);
+    success: function (data) {
+      fullyBookedDates = data.fully_booked_dates;
+      renderCalendar();
+      console.log("Fully booked dates:", fullyBookedDates);
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
       console.error("Error fetching data:", error);
     },
   });

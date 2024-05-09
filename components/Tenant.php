@@ -65,37 +65,40 @@ include '../api/authentication.php';
                                         <th scope="col" class="text-center">Email</th>
                                         <th scope="col" class="text-center">Contact Number</th>
                                         <th scope="col" class="text-center">Occupation</th>
+                                        <th scope="col" class="text-center">Room Number</th>
+                                        <th scope="col" class="text-center">Date Started</th>
                                         <th scope="col" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 <?php
-                                    $sql = "SELECT * FROM tbl_tenants";
+                                $sql = "SELECT * FROM tbl_tenants";
 
-                                    $result = $conn->query($sql);
+                                $result = $conn->query($sql);
 
-                                    if (!$result) {
-                                        die("Invalid query: " . $conn->error);
-                                    }
+                                if (!$result) {
+                                    die("Invalid query: " . $conn->error);
+                                }
 
-                                    $i = 0;
-                                    while ($row = $result->fetch_assoc()) {
-                                        $i++;
-                                        echo "
-                                        <tr>
-                                            <td class='text-center'>{$i}</td>
-                                            <td class='text-center'>{$row['name']}</td>
-                                            <td class='text-center'>{$row['email']}</td>
-                                            <td class='text-center'>{$row['contact_number']}</td>
-                                            <td class='text-center'>{$row['occupation']}</td>
-                                            <td class='text-center'>
+                                $i = 0;
+                                while ($row = $result->fetch_assoc()) {
+                                    $i++;
+                                    echo "
+                                    <tr>
+                                        <td class='text-center'>{$i}</td>
+                                        <td class='text-center'>{$row['name']}</td>
+                                        <td class='text-center'>{$row['email']}</td>
+                                        <td class='text-center'>{$row['contact_number']}</td>
+                                        <td class='text-center'>{$row['occupation']}</td>
+                                        <td class='text-center'>{$row['apartment_id']}</td>
+                                        <td class='text-center'>" . date('m/d/Y', strtotime($row['date_started'])) . "</td>
+                                        <td class='text-center'>
                                             <button class='btn btn-primary btn-sm mr-2' data-bs-toggle='modal' data-bs-target='#editModal_{$row['tenant_id']}'>Edit</button>
-                                            <button class='btn btn-danger btn-sm delete-btn' data-user-id='{$row['tenant_id']}'>Delete</button>
-                                            </td>
-                                        </tr>
-                                        ";
-                                    }
-                                    ?>
+                                            <button class='btn btn-danger btn-sm delete-btn' data-user-id='{$row['tenant_id']}' data-apartment-id='{$row['apartment_id']}'>Delete</button>
+                                        </td>
+                                    </tr>";
+                                }
+                                ?>
                                 </tbody>
                             </table>
                         </div>
@@ -135,6 +138,10 @@ while ($row = $result->fetch_assoc()) {
                     <label for="addOccupation" class="form-label">Occupation</label>
                     <input type="text" class="form-control" id="addOccupation_<?php echo $row['tenant_id']; ?>" placeholder="Enter occupation" value="<?php echo $row['occupation']; ?>">
                 </div>
+                <div class="mb-3">
+                    <label for="apartment" class="form-label">Room Number</label>
+                    <input type="text" class="form-control" id="apartment_<?php echo $row['tenant_id']; ?>" value="<?php echo $row['apartment_id']; ?>" readonly>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -145,8 +152,8 @@ while ($row = $result->fetch_assoc()) {
 </div>
 <?php } ?>
 
-    <!-- Add Tenant Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -170,6 +177,24 @@ while ($row = $result->fetch_assoc()) {
                     <label for="addOccupation" class="form-label">Occupation</label>
                     <input type="text" class="form-control" id="addOccupation" placeholder="Enter occupation">
                 </div>
+                <div class="mb-3">
+                    <label for="apartmentSelect" class="form-label">Apartment</label>
+                    <select class="form-select" id="apartmentSelect">
+                        <?php
+                            $apartmentQuery = "SELECT apartment_id, room_number, room_description FROM tbl_apartments WHERE vacancy = 'Vacant'";
+                            $apartmentResult = mysqli_query($conn, $apartmentQuery);
+
+                            // Check if there are any apartments
+                            if (mysqli_num_rows($apartmentResult) > 0) {
+                                // Output options for each apartment
+                                while ($row = mysqli_fetch_assoc($apartmentResult)) {
+                                    // Concatenate room number and room description with a space
+                                    echo "<option value='" . $row['room_number'] . "'>" . $row['room_number'] . " - " . $row['room_description'] . "</option>";
+                                }
+                            }
+                            ?>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -180,6 +205,7 @@ while ($row = $result->fetch_assoc()) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 $(document).ready(function(){
     $(".add-btn").click(function(){
@@ -187,7 +213,14 @@ $(document).ready(function(){
         var email = $("#Email").val();
         var contact = $("#contact").val();
         var occupation = $("#addOccupation").val();
-        
+        var apartment_id = $("#apartmentSelect").val(); // Get selected apartment ID
+
+        // Validate fields
+        if (fullname === '' || email === '' || contact === '') {
+            alert('Please fill in all required fields.');
+            return; // Exit function if any required field is empty
+        }
+
         // Validate email format
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -203,7 +236,8 @@ $(document).ready(function(){
                 fullname: fullname,
                 email: email,
                 contact: contact,
-                occupation: occupation
+                occupation: occupation,
+                apartment_id: apartment_id, // Pass apartment ID to PHP script
             },
             success: function(response){
                 if (response.success) {
@@ -220,7 +254,6 @@ $(document).ready(function(){
     });
 });
 </script>
-
 
 <script>
 $(document).ready(function(){
@@ -271,20 +304,22 @@ $(document).ready(function(){
 $(document).ready(function(){
     $(".delete-btn").click(function(){
         var tenant_id = $(this).data("user-id");
+        var apartment_id = $(this).data("apartment-id"); // Get the apartment ID
+        
         var confirmation = confirm("Are you sure you want to delete this tenant?");
         
         if (confirmation) {
             $.ajax({
-                url: "../api/delete_tenants.php", // Replace with the API for deleting tenant
+                url: "../api/delete_tenants.php", // API endpoint for deleting tenant and updating vacancy status
                 type: "POST",
                 dataType: "json",
                 data: {
-                    tenant_id: tenant_id
+                    tenant_id: tenant_id,
+                    apartment_id: apartment_id // Pass apartment ID to the PHP script
                 },
                 success: function(response){
                     if (response.success) {
                         alert(response.success); // Success message
-                        // Optionally, you can reload the page or update the table dynamically
                         location.reload(); // Reload the page to reflect changes
                     } else if (response.error) {
                         alert(response.error); // Error message

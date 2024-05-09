@@ -172,10 +172,7 @@ while ($row = $result->fetch_assoc()) {
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Vacancy</label>
-                        <select class="form-select" id="vacancy_<?php echo $row['room_number']; ?>">
-                            <option value="Vacant" <?php echo ($row['vacancy'] == 'Vacant') ? 'selected' : ''; ?>>Vacant</option>
-                            <option value="Occupied" <?php echo ($row['vacancy'] == 'Occupied') ? 'selected' : ''; ?>>Occupied</option>
-                        </select>
+                        <input type="text" class="form-control" id="vacancy_<?php echo $row['room_number']; ?>" value="<?php echo $row['vacancy']; ?>" readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Room View</label>

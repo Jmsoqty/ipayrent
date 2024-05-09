@@ -138,6 +138,12 @@ $(document).ready(function() {
         // Get form data
         var email = $('#Email').val().trim(); // Trim to remove leading and trailing whitespace
         var password = $('#Password').val().trim();
+        // Validate email format
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return; // Exit function if email is invalid
+        }
         // Make AJAX request to API endpoint
         if (email === '' || password === '') {
             alert('Please fill in all fields.');

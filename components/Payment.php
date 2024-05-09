@@ -43,9 +43,9 @@ include '../api/authentication.php';
                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#print">Print Transaction</button>
                 </div>
                 <div class="d-flex justify-content-around mt-3">
-                    <img src="../assets/images/find.png" class="img-fluid me-2" id="searchbar" width="35px">
+                    <img src="../assets/images/find.png" class="img-fluid me-2" id="searchBtn" width="35px">
                     <input class="form-control mr-sm-2" type="text" id="search" placeholder="Search Transaction.." aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchBtn">Search</button>
+                    
                 </div>
                 <div class="card mt-3">
                     <div class="card-header bg-primary-subtle">

@@ -188,6 +188,13 @@ $(document).ready(function(){
         var contact = $("#contact").val();
         var occupation = $("#addOccupation").val();
         
+        // Validate email format
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return; // Exit function if email is invalid
+        }
+
         $.ajax({
             url: "../api/add_tenants.php",
             type: "POST",
@@ -214,6 +221,7 @@ $(document).ready(function(){
 });
 </script>
 
+
 <script>
 $(document).ready(function(){
     $(".edit-btn").click(function(){
@@ -222,6 +230,13 @@ $(document).ready(function(){
         var email = $("#Email_" + tenant_id).val();
         var contact = $("#contact_" + tenant_id).val();
         var occupation = $("#addOccupation_" + tenant_id).val();
+
+        // Validate email format
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('Please enter a valid email address.');
+            return; // Exit function if email is invalid
+        }
 
         $.ajax({
             url: "../api/edit_tenants.php", // Replace with the API for editing tenant
@@ -250,6 +265,7 @@ $(document).ready(function(){
     });
 });
 </script>
+
 
 <script>
 $(document).ready(function(){

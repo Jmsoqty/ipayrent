@@ -128,7 +128,7 @@ while ($row = $result->fetch_assoc()) {
                 </div>
                 <div class="mb-3">
                     <label for="Email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="Email_<?php echo $row['tenant_id']; ?>" placeholder="Enter email" value="<?php echo $row['email']; ?>">
+                    <input type="email" class="form-control" id="Email_<?php echo $row['tenant_id']; ?>" placeholder="Enter email" value="<?php echo $row['email']; ?>" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="contact" class="form-label">Contact Number</label>
@@ -177,25 +177,28 @@ while ($row = $result->fetch_assoc()) {
                     <label for="addOccupation" class="form-label">Occupation</label>
                     <input type="text" class="form-control" id="addOccupation" placeholder="Enter occupation">
                 </div>
-                <div class="mb-3">
-                    <label for="apartmentSelect" class="form-label">Apartment</label>
-                    <select class="form-select" id="apartmentSelect">
-                        <?php
-                            $apartmentQuery = "SELECT apartment_id, room_number, room_description FROM tbl_apartments WHERE vacancy = 'Vacant'";
-                            $apartmentResult = mysqli_query($conn, $apartmentQuery);
+               <div class="mb-3">
+                <label for="apartmentSelect" class="form-label">Room Number</label>
+                <select class="form-select" id="apartmentSelect">
+                    <option value="" selected>Select Room Number</option>
+                    <?php
+                    $apartmentQuery = "SELECT apartment_id, room_number, room_description FROM tbl_apartments WHERE vacancy = 'Vacant'";
+                    $apartmentResult = mysqli_query($conn, $apartmentQuery);
 
-                            // Check if there are any apartments
-                            if (mysqli_num_rows($apartmentResult) > 0) {
-                                // Output options for each apartment
-                                while ($row = mysqli_fetch_assoc($apartmentResult)) {
-                                    // Concatenate room number and room description with a space
-                                    echo "<option value='" . $row['room_number'] . "'>" . $row['room_number'] . " - " . $row['room_description'] . "</option>";
-                                }
-                            }
-                            ?>
-                    </select>
-                </div>
-            </div>
+                    // Check if there are any apartments
+                    if (mysqli_num_rows($apartmentResult) > 0) {
+                        // Output options for each apartment
+                        while ($row = mysqli_fetch_assoc($apartmentResult)) {
+                            // Concatenate room number and room description with a space
+                            echo "<option value='" . $row['room_number'] . "'>" . $row['room_number'] . " - " . $row['room_description'] . "</option>";
+                        }
+                    } else {
+                        // If no rooms available, display a default option
+                        echo "<option value='' disabled>No Rooms Available</option>";
+                    }
+                    ?>
+                </select>
+            </div>  
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary add-btn">Save changes</button>

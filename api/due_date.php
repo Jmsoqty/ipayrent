@@ -12,11 +12,26 @@ if (isset($_GET['email'])) {
 
     if ($result->num_rows > 0) {
         // Output data of each row
-        $due_dates = array();
         while ($row = $result->fetch_assoc()) {
-            $due_dates[] = $row["date_started"];
+            $date_started = new DateTime($row["date_started"]);
+            $due_dates = array();
+            // Set the initial due date as the date started
+            $due_date = clone $date_started;
+            // Set the interval to be one month
+            $interval = new DateInterval('P1M');
+            // Set the number of due dates you want to generate (e.g., 12 for one year)
+            $num_due_dates = 12;
+
+            // Calculate the next 12 due dates
+            for ($i = 0; $i < $num_due_dates; $i++) {
+                // Add one month to the due date
+                $due_date->add($interval);
+                // Add the due date to the array
+                $due_dates[] = $due_date->format('Y-m-d');
+            }
+            // Output due dates
+            echo json_encode($due_dates);
         }
-        echo json_encode($due_dates);
     } else {
         echo "0 results";
     }

@@ -51,6 +51,25 @@ $stmtInsertTransaction->execute();
 if ($stmtInsertTransaction->affected_rows > 0) {
     // Transaction inserted successfully
     echo json_encode(array("success" => true, "message" => "Transaction data inserted successfully."));
+
+    // Now, let's insert a notification into tbl_notifications
+    $notificationTitle = "Payment Successful";
+    $notificationSubject = "You paid your rent on the Month of " . date('F Y', strtotime($newStartDate));
+    $notificationDate = date('Y-m-d');
+    
+    $sqlInsertNotification = "INSERT INTO tbl_notifications (to_whom, title, subject, date_created) VALUES (?, ?, ?, ?)";
+    $stmtInsertNotification = $conn->prepare($sqlInsertNotification);
+    $stmtInsertNotification->bind_param("ssss", $email, $notificationTitle, $notificationSubject, $notificationDate);
+    $stmtInsertNotification->execute();
+
+    // Check if the notification was successfully inserted
+    if ($stmtInsertNotification->affected_rows > 0) {
+        // Notification inserted successfully
+        echo json_encode(array("notification_success" => true, "notification_message" => "Notification inserted successfully."));
+    } else {
+        // Failed to insert notification
+        echo json_encode(array("notification_success" => false, "notification_message" => "Failed to insert notification."));
+    }
 } else {
     // Failed to insert transaction
     echo json_encode(array("success" => false, "message" => "Failed to insert transaction data."));
